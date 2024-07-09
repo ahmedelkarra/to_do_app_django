@@ -1,0 +1,86 @@
+{% extends 'main/index.html' %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>To-Do-App</title>
+  </head>
+  <body>
+    {% block content %}
+      <div class="d-flex flex-column h-100 bg-dark container-fluid overflow-auto">
+        <div class="my-3">
+          {% for ele in todoInfo %}
+            <div class="d-flex justify-content-between align-items-center {% if ele.isDone == True %}bg-secondary {% else %}bg-light{% endif %} my-3 rounded-3">
+              <div class="bg-dark-subtle w-75 mx-2">
+                <h3 class="text-center text-sm-start {% if ele.isDone == True %}text-light {% else %}text-dark-emphasis{% endif %}" style="word-break: break-all;">{{ ele.title }}</h3>
+                <p class="text-center text-sm-start {% if ele.isDone == True %}text-light {% else %}text-dark-emphasis{% endif %}" style="word-break: break-all;">{{ ele.body }}</p>
+              </div>
+              <div class="d-flex justify-content-center align-items-center gap-2 m-auto px-1">
+                <button type="button" data-bs-toggle="modal" data-bs-target="#addToDo" class="d-flex justify-content-center align-items-center btn fs-3 btn-primary rounded-circle p-4" style="width: 20px ; height: 30px"><i class="fa-solid fa-plus"></i></button>
+
+                <button type="button" data-bs-toggle="modal" data-bs-target="#{{ele.title}}" class="d-flex justify-content-center align-items-center btn fs-3 {% if ele.isDone == True %}btn-info {% else %}btn-outline-info{% endif %} rounded-circle p-4" style="width: 20px ; height: 30px"><i class="fa-regular fa-pen-to-square"></i></button>
+
+                <form method="post" action="{% url 'deleteInfo' %}">
+                  {% csrf_token %}
+                  <input type="text" name="idInfo" value="{{ ele.id }}" hidden />
+                  <button type="submit" class="d-flex justify-content-center align-items-center btn fs-3 btn-danger rounded-circle p-4" style="width: 20px ; height: 30px"><i class="fa-regular fa-trash-can"></i></button>
+                </form>
+
+                <form method="post" action="{% url 'doneInfo' ele.id %}">
+                  {% csrf_token %}
+                  <input type="text" name="idInfo" value="{{ ele.id }}" hidden />
+                  <button type="submit" class="d-flex justify-content-center align-items-center btn fs-3 {% if ele.isDone == True %}btn-success {% else %}btn-outline-success{% endif %} rounded-circle p-4" style="width: 20px ; height: 30px"><i class="fa-solid fa-check"></i></button>
+                </form>
+              </div>
+            </div>
+            {% comment %}This Is Add Form{% endcomment %}
+            <div class="modal fade" id="addToDo" tabindex="-1" aria-labelledby="addToDoLabel" aria-hidden="true">
+              <div class="modal-dialog">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h5 class="modal-title" id="addToDoLabel">Add To Do</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                  </div>
+                  <form method="post" action="addInfo">
+                    <div class="d-flex flex-column modal-body gap-2">
+                      <input type="text" name="titleInfo" maxlength="20" placeholder="Title" style="height: 50px; padding:5px 10px;" required />
+                      <textarea name="bodyInfo" maxlength="100" placeholder="Body" style="height: 100px; padding:5px 10px;" required></textarea>
+                    </div>
+                    <div class="modal-footer">
+                      <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                      {% csrf_token %}
+                      <button type="submit" class="btn btn-primary">ADD</button>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            </div>
+            {% comment %}This Is Edit Form{% endcomment %}
+            <div class="modal fade" id="{{ele.title}}" tabindex="-1" aria-labelledby="{{ele.title}}Label" aria-hidden="true">
+              <div class="modal-dialog">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h5 class="modal-title" id="{{ele.title}}Label">Edit To Do</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                  </div>
+                  <form method="post" action="{% url "editInfo" ele.id %}">
+                    <div class="d-flex flex-column modal-body gap-2">
+                      <input type="text" name="titleInfo" maxlength="20" placeholder="Title" style="height: 50px; padding:5px 10px;" required value="{{ ele.title }}" />
+                      <textarea name="bodyInfo" maxlength="100" placeholder="Body" style="height: 100px; padding:5px 10px;" required>{{ ele.body }}</textarea>
+                    </div>
+                    <div class="modal-footer">
+                      <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                      {% csrf_token %}
+                      <button type="submit" class="btn btn-primary">EDIT</button>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            </div>
+          {% endfor %}
+        </div>
+      </div>
+    {% endblock %}
+  </body>
+</html>

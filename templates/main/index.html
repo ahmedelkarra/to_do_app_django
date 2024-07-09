@@ -1,0 +1,21 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>To-Do-App</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/all.css' %}" />
+  </head>
+  <body class="d-flex flex-column justify-content-between" style="height: 100dvh">
+    {% include 'main/Header.html' %}
+    {% block content %}
+
+    {% endblock %}
+    {% include 'main/Footer.html' %}
+    <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
+    <script src="{% static 'js/all.js' %}"></script>
+  </body>
+</html>
